@@ -10,8 +10,18 @@
 #' @param n_trans_val The number of gridpoints representing different strengths of transformation we want to test for getting the most normal curve. The higher this number is, the better nomalcy you will get, but the function will also take longer to run.
 #' @export
 #' @examples 
-#' data("USArrests")
-#' optLogTransform(USArrests$Murder)
+#' library(optLog)
+#' 
+#' # First generate a random normal dataset.
+#' mydata <- rnorm(100, mean = 70, sd = 20)
+#' hist(mydata)
+#' # Add skew to the dataset.
+#' mydata_skew <- log(mydata-10)
+#' hist(mydata_skew)
+#' 
+#' # Use optLogTransform to remove the skew.
+#' mydata_transformed <- optLogTransform(mydata_skew)
+#' hist(mydata_transformed)
 
 optLogTransform <- function(mydata, skew_thresh = 1, n_trans_val = 50, scale = T, hist_raw_folder = NA,  hist_trans_folder = NA, kurt_folder = NA){
   

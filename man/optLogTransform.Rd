@@ -26,6 +26,16 @@ optLogTransform(mydata, skew_thresh = 1, n_trans_val = 50, scale = T,
 This function finds the optimal transformation for normalization of each of the variables and outputs a matrix of the transformed data.
 }
 \examples{
-data("USArrests")
-optLogTransform(USArrests$Murder)
+library(optLog)
+
+# First generate a random normal dataset.
+mydata <- rnorm(100, mean = 70, sd = 20)
+hist(mydata)
+# Add skew to the dataset.
+mydata_skew <- log(mydata-10)
+hist(mydata_skew)
+
+# Use optLogTransform to remove the skew.
+mydata_transformed <- optLogTransform(mydata_skew)
+hist(mydata_transformed)
 }
