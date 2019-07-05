@@ -27,5 +27,5 @@ This function finds the optimal transformation for normalization of each of the 
 }
 \examples{
 data("USArrests")
-optLog_transform(USArrests$Murder)
+optLogTransform(USArrests$Murder)
 }
