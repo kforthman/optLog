@@ -3,7 +3,7 @@ optLog
 To install in R:
 
 ```
-install(devtools)
+install.packages("devtools")
 devtools::install_github("kforthman/optLog")
 library(optLog)
 ```
