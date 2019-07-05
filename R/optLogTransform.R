@@ -11,9 +11,12 @@
 #' @export
 #' @examples 
 #' data("USArrests")
-#' optLog_transform(USArrests$Murder)
+#' optLogTransform(USArrests$Murder)
 
 optLogTransform <- function(mydata, skew_thresh = 1, n_trans_val = 50, scale = T, hist_raw_folder = NA,  hist_trans_folder = NA, kurt_folder = NA){
+  
+  mydata <- as.matrix(mydata)
+  
   if(sum(!is.numeric(mydata))>0){
     stop("Please input a numeric dataset.")
   }
@@ -24,7 +27,7 @@ optLogTransform <- function(mydata, skew_thresh = 1, n_trans_val = 50, scale = T
   # Define the number of variables.
   n <- dim(mydata)[1]
   nvar <- dim(mydata)[2]
-  
+
   # Create an empty matrix to store the transformed variables.
   trans_data <- matrix(nrow = n, ncol = 0)
   
