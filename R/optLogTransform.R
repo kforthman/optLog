@@ -38,7 +38,7 @@ optLogTransform <- function(mydata, skew_thresh = 1, n_trans_val = 50, scale = T
     var_name <- names(mydata)[i]
     var_obs <- mydata[,i]
     
-    var_obs_skewness <- round(skewness(var_obs, na.rm = T), 1)
+    var_obs_skewness <- round(e1071::skewness(var_obs, na.rm = T), 1)
     
     message( paste0(i, '_', var_name, ' ... Skewness: ', var_obs_skewness) )
     
@@ -70,7 +70,7 @@ optLogTransform <- function(mydata, skew_thresh = 1, n_trans_val = 50, scale = T
       var_obs_trans_mat <- sapply(trans_val, trans_func)
       colnames(var_obs_trans_mat) <- trans_val #round(trans_val, 1)
       # The kurtosis is found for each strength of transformation.
-      kurt <- sapply(seq(1,n_trans_val), function(x){kurtosis(var_obs_trans_mat[,x], na.rm = T)})
+      kurt <- sapply(seq(1,n_trans_val), function(x){e1071::kurtosis(var_obs_trans_mat[,x], na.rm = T)})
       
       # The trans_val that results in the best kurtosis is found
       kurt_min <- min(abs(kurt), na.rm = T)
@@ -98,7 +98,7 @@ optLogTransform <- function(mydata, skew_thresh = 1, n_trans_val = 50, scale = T
       
       var_obs_trans_mat <- sapply(trans_val, trans_func)
       colnames(var_obs_trans_mat) <- trans_val #round(trans_val, 1)
-      kurt <- sapply(seq(1,n_trans_val), function(x){kurtosis(var_obs_trans_mat[,x], na.rm = T)})
+      kurt <- sapply(seq(1,n_trans_val), function(x){e1071::kurtosis(var_obs_trans_mat[,x], na.rm = T)})
       
       kurt_min <- min(abs(kurt), na.rm = T)
       kurt_min_loc <- which.min(abs(kurt))
@@ -117,7 +117,7 @@ optLogTransform <- function(mydata, skew_thresh = 1, n_trans_val = 50, scale = T
       # If the variable is not that skewed, it is not transformed.
       var_obs_trans <- var_obs
       kurt <- seq(0, 0, length.out = n_trans_val)
-      mykurt <- kurtosis(var_obs_trans, na.rm = T)
+      mykurt <- e1071::kurtosis(var_obs_trans, na.rm = T)
       mytext <- paste0('normal, no transformation; kurtosis = ', round(mykurt,3))
     }
     
