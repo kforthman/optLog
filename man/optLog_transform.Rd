@@ -19,10 +19,14 @@ optLog_transform(mydata, skew_thresh = 1, n_trans_val = 50,
 
 \item{hist_raw_folder}{The name of the folder where you would like to save a histogram showing the distribution of the raw data. If you do not wish to save these plots, set to NA.}
 
-\item{hist_trans_folder}{he name of the folder where you would like to save a histogram showing the distribution of the transformed data. If you do not wish to save these plots, set to NA.}
+\item{hist_trans_folder}{The name of the folder where you would like to save a histogram showing the distribution of the transformed data. If you do not wish to save these plots, set to NA.}
 
 \item{kurt_folder}{The name of the folder where you would like to save a plot showing the optimal kurtosis with respect to the transformation variable. If you do not wish to save these plots, set to NA.}
 }
 \description{
 This function finds the optimal transformation for normalization of each of the variables and outputs a matrix of the transformed data.
+}
+\examples{
+data("USArrests")
+optLog_transform(USArrests$Murder)
 }

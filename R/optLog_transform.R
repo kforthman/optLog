@@ -5,9 +5,12 @@
 #' @param skew_thresh The threshold skew value required for transformation. If the skew of the variable is less than skew_thresh, it will be considered normal and will not be transformed.
 #' @param scale If set to TRUE, the resulting transformation will have zero mean and unit variance.
 #' @param hist_raw_folder The name of the folder where you would like to save a histogram showing the distribution of the raw data. If you do not wish to save these plots, set to NA.
-#' @param hist_trans_folder he name of the folder where you would like to save a histogram showing the distribution of the transformed data. If you do not wish to save these plots, set to NA.
+#' @param hist_trans_folder The name of the folder where you would like to save a histogram showing the distribution of the transformed data. If you do not wish to save these plots, set to NA.
 #' @param kurt_folder The name of the folder where you would like to save a plot showing the optimal kurtosis with respect to the transformation variable. If you do not wish to save these plots, set to NA.
 #' @param n_trans_val The number of gridpoints representing different strengths of transformation we want to test for getting the most normal curve. The higher this number is, the better nomalcy you will get, but the function will also take longer to run.
+#' @examples 
+#' data("USArrests")
+#' optLog_transform(USArrests$Murder)
 
 optLog_transform <- function(mydata, skew_thresh = 1, n_trans_val = 50, scale = T, hist_raw_folder = NA,  hist_trans_folder = NA, kurt_folder = NA){
   if(sum(!is.numeric(mydata))>0){
@@ -115,8 +118,9 @@ optLog_transform <- function(mydata, skew_thresh = 1, n_trans_val = 50, scale = 
     }
     
     # If the observations are supposed to be of zero mean and unit variance, they are scaled.
-    var_obs_trans <- scale(var_obs_trans)
-    
+    if(scale){
+      var_obs_trans <- scale(var_obs_trans)
+    }
     # # The following is to assure that the breaks are uniform accross variables.
     # max_var_obs_trans <- max(var_obs_trans, na.rm = T)
     # min_var_obs_trans <- min(var_obs_trans, na.rm = T)
@@ -124,27 +128,27 @@ optLog_transform <- function(mydata, skew_thresh = 1, n_trans_val = 50, scale = 
     
     # Create histograms for the transformed variables.
     if(!is.na(hist_trans_folder)){
-    png(paste0(hist_trans_folder, "/", i, "_", var_name, "_hist.png"))
-    hist(var_obs_trans, main = paste(var_name, "Transformed"), 
-         breaks = 50)
-    mtext(mytext, cex = 0.9)
-    dev.off()
+      png(paste0(hist_trans_folder, "/", i, "_", var_name, "_hist.png"))
+      hist(var_obs_trans, main = paste(var_name, "Transformed"), 
+           breaks = 50)
+      mtext(mytext, cex = 0.9)
+      dev.off()
     }
     
     # Create histograms for the raw variables.
     if(!is.na(hist_raw_folder)){
-    png(paste0(hist_raw_folder, "/", i, "_", var_name, "_hist.png"))
-    hist(var_obs, main = paste(var_name), 
-         breaks = 50)
-    #mtext(mytext, cex = 0.9)
-    dev.off()
+      png(paste0(hist_raw_folder, "/", i, "_", var_name, "_hist.png"))
+      hist(var_obs, main = paste(var_name), 
+           breaks = 50)
+      #mtext(mytext, cex = 0.9)
+      dev.off()
     }
     
     if(!is.na(kurt_folder)){
-    # The kurtosis for each transformation value.
-    png(paste0(kurt_folder, "/", i, "_", var_name, "_kurt.png"))
-    plot(trans_val, kurt, main = var_name)
-    dev.off()
+      # The kurtosis for each transformation value.
+      png(paste0(kurt_folder, "/", i, "_", var_name, "_kurt.png"))
+      plot(trans_val, kurt, main = var_name)
+      dev.off()
     }
     
     # Binds the transformed variable to a new matrix.
