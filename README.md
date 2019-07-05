@@ -4,6 +4,6 @@ To install in R:
 
 ```
 install(devtools)
-devtools::install_git("https://github.com/kforthman/optLog.git")
+devtools::install_github("kforthman/optLog")
 library(optLog)
 ```
