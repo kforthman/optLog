@@ -8,11 +8,12 @@
 #' @param hist_trans_folder The name of the folder where you would like to save a histogram showing the distribution of the transformed data. If you do not wish to save these plots, set to NA.
 #' @param kurt_folder The name of the folder where you would like to save a plot showing the optimal kurtosis with respect to the transformation variable. If you do not wish to save these plots, set to NA.
 #' @param n_trans_val The number of gridpoints representing different strengths of transformation we want to test for getting the most normal curve. The higher this number is, the better nomalcy you will get, but the function will also take longer to run.
+#' @export
 #' @examples 
 #' data("USArrests")
 #' optLog_transform(USArrests$Murder)
 
-optLog_transform <- function(mydata, skew_thresh = 1, n_trans_val = 50, scale = T, hist_raw_folder = NA,  hist_trans_folder = NA, kurt_folder = NA){
+optLogTransform <- function(mydata, skew_thresh = 1, n_trans_val = 50, scale = T, hist_raw_folder = NA,  hist_trans_folder = NA, kurt_folder = NA){
   if(sum(!is.numeric(mydata))>0){
     stop("Please input a numeric dataset.")
   }
