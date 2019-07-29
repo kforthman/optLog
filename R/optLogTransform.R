@@ -26,6 +26,8 @@
 
 optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val = 50, scaled = T, retain_domain = F, hist_raw_folder = NA,  hist_trans_folder = NA, skew_folder = NA){
   
+  # ---- Conditions for function use ----
+  
   if(scaled && retain_domain){
     stop("You cannot set both scaled and retain_domain to TRUE.")
   }
@@ -37,12 +39,18 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
     stop("Please input a numeric dataset.")
   }
   
+  
+  # ---- Setup  ----
+  
   # Define the number of variables.
   n <- dim(mydata)[1]
   nvar <- dim(mydata)[2]
   
   # Create an empty matrix to store the transformed variables.
   trans_data <- matrix(nrow = n, ncol = 0)
+  
+  
+  # ---- Transform the data  ----
   
   # Data is bent so that is is curved in a particular direction.
   # Right skewed data will be bent so that they curve concave down.
@@ -115,8 +123,8 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
         } }
       
     }else{
-      message("\tVariable is already normal; no need for transformation.")
       # If the variable is not that skewed, it is not transformed.
+      message("\tVariable is already normal; no need for transformation.")
       var_trans <- var_obs
       skew_val <- seq(0, 0, length.out = n_trans_val)
       mytext <- paste0('normal, no transformation')
@@ -126,6 +134,8 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
     if(scaled){
       var_trans <- scale(var_trans)
     }
+    
+    # ---- Create Histograms ----
     
     # Create histograms for the transformed variables.
     if(!is.na(hist_trans_folder)){
@@ -152,12 +162,13 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
       dev.off()
     }
     
-    # Binds the transformed variable to a new matrix.
+    # Binds the transformed variable to a new matrix. ----
     trans_data <- cbind(trans_data, matrix(var_trans))
   }
   
   # trans_data <- knnImputation(trans_data)
   
+  # ---- Return transformed dataset ----
   colnames(trans_data) <- names(mydata)
   rownames(trans_data) <- rownames(mydata)
   return(trans_data)

@@ -4,38 +4,41 @@
 \alias{optLogTransform}
 \title{Optimize log transformation}
 \usage{
-optLogTransform(mydata, skew_thresh = 1, n_trans_val = 50, scale = T,
-  hist_raw_folder = NA, hist_trans_folder = NA, kurt_folder = NA)
+optLogTransform(mydata, type = "log", skew_thresh = 1,
+  n_trans_val = 50, scaled = T, retain_domain = F,
+  hist_raw_folder = NA, hist_trans_folder = NA, skew_folder = NA)
 }
 \arguments{
 \item{mydata}{The dataset you would like to transform. Must be in vector or matrix form. If given a matrix, the function will transform each column seprately. Works best if columns are named, particularly if you are exporting plots.}
+
+\item{type}{The type of transformation can be either logarithmic or power; "log" and "power" respectively.}
 
 \item{skew_thresh}{The threshold skew value required for transformation. If the skew of the variable is less than skew_thresh, it will be considered normal and will not be transformed.}
 
 \item{n_trans_val}{The number of gridpoints representing different strengths of transformation we want to test for getting the most normal curve. The higher this number is, the better nomalcy you will get, but the function will also take longer to run.}
 
-\item{scale}{If set to TRUE, the resulting transformation will have zero mean and unit variance.}
+\item{scaled}{If set to TRUE, the resulting transformation will have zero mean and unit variance.}
 
 \item{hist_raw_folder}{The name of the folder where you would like to save a histogram showing the distribution of the raw data. If you do not wish to save these plots, set to NA.}
 
 \item{hist_trans_folder}{The name of the folder where you would like to save a histogram showing the distribution of the transformed data. If you do not wish to save these plots, set to NA.}
 
-\item{kurt_folder}{The name of the folder where you would like to save a plot showing the optimal kurtosis with respect to the transformation variable. If you do not wish to save these plots, set to NA.}
+\item{skew_folder}{The name of the folder where you would like to save a plot showing the optimal skew with respect to the transformation variable. If you do not wish to save these plots, set to NA.}
 }
 \description{
-This function finds the optimal transformation for normalization of each of the variables and outputs a matrix of the transformed data.
+This function finds the optimal transformation for normalization of each of the variables and outputs a matrix of the transformed data. If "scaled" is set to false, unless "retain_domain" is set to FALSE, the domain will be [0,1].
 }
 \examples{
 library(optLog)
 
 # First generate a random normal dataset.
-mydata <- rnorm(100, mean = 70, sd = 20)
+mydata <- rnorm(100, mean = 0, sd = 1)
 hist(mydata)
 # Add skew to the dataset.
-mydata_skew <- log(mydata-10)
+mydata_skew <- 1-(1-mydata)^2
 hist(mydata_skew)
 
 # Use optLogTransform to remove the skew.
-mydata_transformed <- optLogTransform(mydata_skew)
+mydata_transformed <- optLogTransform(as.matrix(mydata_skew), type = "power", scaled = F)
 hist(mydata_transformed)
 }
