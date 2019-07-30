@@ -19,7 +19,7 @@
 #' @param skew_folder The name of the folder where you would like to save a plot showing the optimal skew with respect to the transformation variable. If you do not wish to save these plots, set to NA.
 #' @importFrom grDevices dev.off png
 #' @importFrom graphics hist mtext plot
-#'
+#' @export
 #' @examples
 #' library(optLog)
 #'
