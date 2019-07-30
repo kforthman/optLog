@@ -13,11 +13,12 @@ optLogTransform(mydata, type = "log", skew_thresh = 1,
 
 \item{type}{The type of transformation can be either logarithmic or power; "log" and "power" respectively.}
 
-\item{skew_thresh}{The threshold skew value required for transformation. If the skew of the variable is less than skew_thresh, it will be considered normal and will not be transformed.}
-
-\item{n_trans_val}{The number of gridpoints representing different strengths of transformation we want to test for getting the most normal curve. The higher this number is, the better nomalcy you will get, but the function will also take longer to run.}
+\item{skew_thresh}{The threshold skew value required for transformation. If the skew of the variable is less than skew_thresh, it will be considered normal and will not be transformed.
+#' @param n_trans_val The number of gridpoints representing different strengths of transformation we want to test for getting the most normal curve. The higher this number is, the better noimportFrom("grDevices", "dev.off", "png")}
 
 \item{scaled}{If set to TRUE, the resulting transformation will have zero mean and unit variance.}
+
+\item{retain_domain}{Set to TRUE if you would like the transformed data to have the same domain as the original dataset (not recommended).}
 
 \item{hist_raw_folder}{The name of the folder where you would like to save a histogram showing the distribution of the raw data. If you do not wish to save these plots, set to NA.}
 
@@ -27,6 +28,7 @@ optLogTransform(mydata, type = "log", skew_thresh = 1,
 }
 \description{
 This function finds the optimal transformation for normalization of each of the variables and outputs a matrix of the transformed data. If "scaled" is set to false, unless "retain_domain" is set to FALSE, the domain will be [0,1].
+The output is a list containing three objects: a string vector listing the function used to transform each variable, a numeric vector giving the skew of each transformed variable, and a matrix of the transformed data.
 }
 \examples{
 library(optLog)
@@ -35,10 +37,11 @@ library(optLog)
 mydata <- rnorm(100, mean = 0, sd = 1)
 hist(mydata)
 # Add skew to the dataset.
-mydata_skew <- 1-(1-mydata)^2
-hist(mydata_skew)
+mydata_skew <- cbind(1-(1-mydata)^2, (1-mydata)^2, mydata)
+colnames(mydata_skew) <- c("Variable 1", "Variable 2", "Variable 3")
+for(i in 1:3){hist(mydata_skew[,i])}
 
 # Use optLogTransform to remove the skew.
-mydata_transformed <- optLogTransform(as.matrix(mydata_skew), type = "power", scaled = F)
+mydata_transformed <- optLogTransform(mydata_skew, type = "power", scaled = FALSE)
 hist(mydata_transformed)
 }

@@ -3,7 +3,7 @@ Title: Optimized Log Transform
 Version: 0.1.0
 Authors@R: person("Katie", "Forthman", email = "kclary@laureateinstitute.org", role = c("aut", "cre"))
 Description: Creates a log function that maximizes kurtosis and transforms a random variable.
-Depends: R (>= 3.5.1)
+Depends: R (>= 3.5)
 License: None.
 Encoding: UTF-8
 LazyData: true
