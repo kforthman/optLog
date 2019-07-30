@@ -28,7 +28,13 @@ optLogTransform(mydata, type = "log", skew_thresh = 1,
 }
 \description{
 This function finds the optimal transformation for normalization of each of the variables and outputs a matrix of the transformed data. If "scaled" is set to false, unless "retain_domain" is set to FALSE, the domain will be [0,1].
-The output is a list containing three objects: a string vector listing the function used to transform each variable, a numeric vector giving the skew of each transformed variable, and a matrix of the transformed data.
+The output is a list containing four objects:
+\enumerate{
+\item a string vector listing the function used to transform each variable,
+\item a numeric vector giving the skew of each transformed variable,
+\item a numeric vector giving the optimal transform value for each variable,
+\item and a matrix of the transformed data.
+}
 }
 \examples{
 library(optLog)
@@ -43,5 +49,5 @@ for(i in 1:3){hist(mydata_skew[,i])}
 
 # Use optLogTransform to remove the skew.
 mydata_transformed <- optLogTransform(mydata_skew, type = "power", scaled = FALSE)
-hist(mydata_transformed)
+hist(mydata_transformed$data)
 }

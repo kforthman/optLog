@@ -1,7 +1,13 @@
 #' Optimize log transformation
 #'
 #' This function finds the optimal transformation for normalization of each of the variables and outputs a matrix of the transformed data. If "scaled" is set to false, unless "retain_domain" is set to FALSE, the domain will be [0,1].
-#' The output is a list containing three objects: a string vector listing the function used to transform each variable, a numeric vector giving the skew of each transformed variable, and a matrix of the transformed data.
+#' The output is a list containing four objects:
+#' \enumerate{
+#' \item a string vector listing the function used to transform each variable,
+#' \item a numeric vector giving the skew of each transformed variable,
+#' \item a numeric vector giving the optimal transform value for each variable,
+#' \item and a matrix of the transformed data.
+#' }
 #' @param mydata The dataset you would like to transform. Must be in vector or matrix form. If given a matrix, the function will transform each column seprately. Works best if columns are named, particularly if you are exporting plots.
 #' @param type The type of transformation can be either logarithmic or power; "log" and "power" respectively.
 #' @param skew_thresh The threshold skew value required for transformation. If the skew of the variable is less than skew_thresh, it will be considered normal and will not be transformed.
@@ -27,7 +33,7 @@
 #'
 #' # Use optLogTransform to remove the skew.
 #' mydata_transformed <- optLogTransform(mydata_skew, type = "power", scaled = FALSE)
-#' hist(mydata_transformed)
+#' hist(mydata_transformed$data)
 
 optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val = 50, scaled = T, retain_domain = F, hist_raw_folder = NA,  hist_trans_folder = NA, skew_folder = NA){
 
@@ -55,6 +61,7 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
   trans_data <- matrix(nrow = n, ncol = 0)
   trans_funcs <- matrix(nrow = 1, ncol = 0)
   trans_skews <- matrix(nrow = 1, ncol = 0)
+  trans_opts <- matrix(nrow = 1, ncol = 0)
 
 
   # ---- Transform the data  ----
@@ -180,6 +187,7 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
     # Binds the transformed variable to a new matrix. ----
     trans_data <- cbind(trans_data, matrix(var_trans))
     trans_funcs <- cbind(trans_funcs, trans_func)
+    trans_opts <- cbind(trans_opts, trans_opt)
     trans_skews <- cbind(trans_skews, e1071::skewness(var_trans))
   }
 
@@ -189,7 +197,7 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
   colnames(trans_data) <- names(mydata)
   rownames(trans_data) <- rownames(mydata)
 
-  output <- list(names = colnames(mydata), func = trans_funcs, skew = trans_skews, data = trans_data)
+  output <- list(names = colnames(mydata), func = trans_funcs, skew = trans_skews, trans_val = trans_opts, data = trans_data)
 
   return(output)
 }
