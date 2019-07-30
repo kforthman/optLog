@@ -33,7 +33,7 @@
 #'
 #' # Use optLogTransform to remove the skew.
 #' mydata_transformed <- optLogTransform(mydata_skew, type = "power", scaled = FALSE)
-#' hist(mydata_transformed$data)
+#' for(i in 1:3){hist(mydata_transformed$data[,i])}
 
 optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val = 50, scaled = T, retain_domain = F, hist_raw_folder = NA,  hist_trans_folder = NA, skew_folder = NA){
 
@@ -70,7 +70,7 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
   # Right skewed data will be bent so that they curve concave down.
   # Left skewed data will be bent so that they curve concave up.
   for(i in 1:nvar){
-    var_name <- names(mydata)[i]
+    var_name <- colnames(mydata)[i]
     if(is.null(var_name)){ var_name <- paste0("var_", i)}
 
     var_obs <- mydata[,i]
@@ -84,6 +84,7 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
 
     # Change domain to be between 0 and 1.
     var_obs <- (var_obs - u)/(m - u)
+    trans_func <- paste0("(x - ", round(u, 3), ")/(", round(m, 3), " - ", round(u, 3), ")")
 
     # The transformation values alter the strength of the transformation. The larger the
     # trans_val is, the less strong the transformation will be.
@@ -96,10 +97,7 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
       # and the opposite transformation for variables skewed to the left.
       if(var_obs_skewness < 0){
         var_obs <- -var_obs + 1
-        trans_func <- "-x + 1"
-      }
-      else{
-        trans_func <- "x"
+        trans_func <- paste0("-(", trans_func, ") + 1")
       }
 
       # The function that transforms the variables has different effects for
@@ -111,7 +109,7 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
       if(type == 'power'){
         skew_val <- sapply(trans_val, function(x){e1071::skewness(var_obs^x, na.rm = T)^2})
       }else if(type == 'log'){
-        skew_val <-  sapply(trans_val, function(x){e1071::skewness(log(var_obs+trans_val), na.rm = T)^2})
+        skew_val <-  sapply(trans_val, function(x){e1071::skewness(log(var_obs+x), na.rm = T)^2})
       }
 
       # The trans_val that results in the best skew is found
@@ -123,7 +121,9 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
         trans_func <- paste0("(", trans_func, ")^", trans_opt)
       }else if(type == 'log'){
         var_trans <- (log(var_obs+trans_opt)-log(trans_opt))/(log(1+trans_opt)-log(trans_opt))
+        #var_trans <- log(var_obs + trans_opt)
         trans_func <- paste0("( log(", trans_func, " + ", trans_opt, ") - log(", trans_opt, ") ) / ( log(1 + ", trans_opt, ") - log(", trans_opt, ") )")
+        #trans_func <- paste0("log(", trans_func, " + ", trans_opt, ")")
       }
 
       if(var_obs_skewness < 0){
@@ -138,12 +138,20 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
       }
 
 
+      if(!is.na(skew_folder)){
+        # The kurtosis for each transformation value.
+        png(paste0(skew_folder, "/", i, "_", var_name, "_skew.png"))
+        plot(trans_val, skew_val, main = var_name, type = 'l')
+        abline(a = 0, b = 0, col = "red")
+        dev.off()
+      }
+
     }else{
       # If the variable is not that skewed, it is not transformed.
       message("\tVariable is already normal; no need for transformation.")
       var_trans <- var_obs
       skew_val <- seq(0, 0, length.out = n_trans_val)
-      trans_func <- NA
+      trans_func <- "x"
     }
 
     # If the observations are supposed to be of zero mean and unit variance, they are scaled.
@@ -171,18 +179,13 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
     # Create histograms for the raw variables.
     if(!is.na(hist_raw_folder)){
       png(paste0(hist_raw_folder, "/", i, "_", var_name, "_hist.png"))
-      hist(var_obs, main = paste(var_name),
+      hist(mydata[,i], main = paste(var_name),
            breaks = 50)
       #mtext(mytext, cex = 0.9)
       dev.off()
     }
 
-    if(!is.na(skew_folder)){
-      # The kurtosis for each transformation value.
-      png(paste0(skew_folder, "/", i, "_", var_name, "_kurt.png"))
-      plot(trans_val, skew_val, main = var_name)
-      dev.off()
-    }
+
 
     # Binds the transformed variable to a new matrix. ----
     trans_data <- cbind(trans_data, matrix(var_trans))

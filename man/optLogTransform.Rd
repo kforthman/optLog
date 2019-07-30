@@ -49,5 +49,5 @@ for(i in 1:3){hist(mydata_skew[,i])}
 
 # Use optLogTransform to remove the skew.
 mydata_transformed <- optLogTransform(mydata_skew, type = "power", scaled = FALSE)
-hist(mydata_transformed$data)
+for(i in 1:3){hist(mydata_transformed$data[,i])}
 }
