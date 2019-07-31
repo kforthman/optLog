@@ -101,8 +101,8 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
       m <- max(var_obs, na.rm = T)
       u <- min(var_obs, na.rm = T)
       if(type == 'power'){
-        var_obs <- (var_obs-u)/(m-u)
-        trans_func <- paste0(round(1/(m-u),3), "(", trans_func, " - ", round(u,3), ")")
+        var_obs <- var_obs-u
+        trans_func <- paste0(trans_func, " - ", round(u,3))
         }
       if(type == 'log'){trans_val <- trans_val*m - trans_val*u - u}
 
@@ -124,12 +124,12 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
       # Record the optimal trans val and the resulting kurtosis of its distribution
       if(type == 'power'){
         var_trans <- var_obs^trans_opt
-        trans_func <- paste0("(", trans_func, ")^", trans_opt)
+        trans_func <- paste0("(", trans_func, ")^", round(trans_opt,5))
       }else if(type == 'log'){
         #var_trans <- (log(var_obs+trans_opt)-log(trans_opt))/(log(1+trans_opt)-log(trans_opt))
         var_trans <- log(var_obs + trans_opt)
         #trans_func <- paste0("( log(", trans_func, " + ", trans_opt, ") - log(", trans_opt, ") ) / ( log(1 + ", trans_opt, ") - log(", trans_opt, ") )")
-        trans_func <- paste0("log(", trans_func, " + ", trans_opt, ")")
+        trans_func <- paste0("log(", trans_func, " + ", round(trans_opt,5), ")")
       }
 
       if(var_obs_skewness < 0){
