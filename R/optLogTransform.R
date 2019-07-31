@@ -79,12 +79,9 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
 
     message( paste0(var_name, ' ... Skewness: ', var_obs_skewness) )
 
-    m <- max(var_obs, na.rm = T)
-    u <- min(var_obs, na.rm = T)
 
-    # Change domain to be between 0 and 1.
-    var_obs <- (var_obs - u)/(m - u)
-    trans_func <- paste0("(x - ", round(u, 3), ")/(", round(m, 3), " - ", round(u, 3), ")")
+
+    trans_func <- "x"
 
     # The transformation values alter the strength of the transformation. The larger the
     # trans_val is, the less strong the transformation will be.
@@ -96,9 +93,18 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
       # Now, the function does one transformation with variables skewed to the right
       # and the opposite transformation for variables skewed to the left.
       if(var_obs_skewness < 0){
-        var_obs <- -var_obs + 1
-        trans_func <- paste0("-(", trans_func, ") + 1")
+        var_obs <- -var_obs
+        trans_func <- paste0("-", trans_func)
       }
+
+
+      m <- max(var_obs, na.rm = T)
+      u <- min(var_obs, na.rm = T)
+      if(type == 'power'){
+        var_obs <- (var_obs-u)/(m-u)
+        trans_func <- paste0(round(1/(m-u),3), "(", trans_func, " - ", round(u,3), ")")
+        }
+      if(type == 'log'){trans_val <- trans_val*m - trans_val*u - u}
 
       # The function that transforms the variables has different effects for
       # different values of the trans_val. For smaller values of trans_val,
@@ -127,8 +133,8 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
       }
 
       if(var_obs_skewness < 0){
-        var_trans <- -var_trans+1
-        trans_func <- paste0("-( ", trans_func, " ) + 1")
+        var_trans <- -var_trans
+        trans_func <- paste0("-", trans_func)
       }
 
 
@@ -151,7 +157,6 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
       message("\tVariable is already normal; no need for transformation.")
       var_trans <- var_obs
       skew_val <- seq(0, 0, length.out = n_trans_val)
-      trans_func <- "x"
     }
 
     # If the observations are supposed to be of zero mean and unit variance, they are scaled.
@@ -171,7 +176,7 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
     if(!is.na(hist_trans_folder)){
       png(paste0(hist_trans_folder, "/", i, "_", var_name, "_hist.png"))
       hist(var_trans, main = paste(var_name, "Transformed"),
-           breaks = 50)
+           breaks = 25)
       mtext(mytext, cex = 0.9)
       dev.off()
     }
@@ -180,7 +185,7 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
     if(!is.na(hist_raw_folder)){
       png(paste0(hist_raw_folder, "/", i, "_", var_name, "_hist.png"))
       hist(mydata[,i], main = paste(var_name),
-           breaks = 50)
+           breaks = 25)
       #mtext(mytext, cex = 0.9)
       dev.off()
     }
