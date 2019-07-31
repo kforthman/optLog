@@ -120,10 +120,10 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
         var_trans <- var_obs^trans_opt
         trans_func <- paste0("(", trans_func, ")^", trans_opt)
       }else if(type == 'log'){
-        var_trans <- (log(var_obs+trans_opt)-log(trans_opt))/(log(1+trans_opt)-log(trans_opt))
-        #var_trans <- log(var_obs + trans_opt)
-        trans_func <- paste0("( log(", trans_func, " + ", trans_opt, ") - log(", trans_opt, ") ) / ( log(1 + ", trans_opt, ") - log(", trans_opt, ") )")
-        #trans_func <- paste0("log(", trans_func, " + ", trans_opt, ")")
+        #var_trans <- (log(var_obs+trans_opt)-log(trans_opt))/(log(1+trans_opt)-log(trans_opt))
+        var_trans <- log(var_obs + trans_opt)
+        #trans_func <- paste0("( log(", trans_func, " + ", trans_opt, ") - log(", trans_opt, ") ) / ( log(1 + ", trans_opt, ") - log(", trans_opt, ") )")
+        trans_func <- paste0("log(", trans_func, " + ", trans_opt, ")")
       }
 
       if(var_obs_skewness < 0){
