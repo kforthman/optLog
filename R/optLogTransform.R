@@ -139,8 +139,12 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
 
 
       if(retain_domain){
-        var_trans <-  var_trans * (m - u) + u
-        trans_func <- paste0("( ", trans_func, " ) * (", round(m, 3), " - ", round(u, 3), ") + ", round(u, 3))
+        m1 <- round(max(var_trans), 3)
+        u1 <- round(min(var_trans), 3)
+        m2 <- round(max(mydata[,i]), 3)
+        u2 <- round(min(mydata[,i]), 3)
+        var_trans <-  (var_trans - u1) / (m1 - u1) * (m2 - u2) + u2
+        trans_func <- paste0("(", trans_func, " - " , u1, ") / (", m1, " - ", u1, ") * (", m2, " - ", u2, ") + ", u2)
       }
 
 
