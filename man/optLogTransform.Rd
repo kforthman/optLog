@@ -13,8 +13,9 @@ optLogTransform(mydata, type = "log", skew_thresh = 1,
 
 \item{type}{The type of transformation can be either logarithmic or power; "log" and "power" respectively.}
 
-\item{skew_thresh}{The threshold skew value required for transformation. If the skew of the variable is less than skew_thresh, it will be considered normal and will not be transformed.
-#' @param n_trans_val The number of gridpoints representing different strengths of transformation we want to test for getting the most normal curve. The higher this number is, the better noimportFrom("grDevices", "dev.off", "png")}
+\item{skew_thresh}{The threshold skew value required for transformation. If the skew of the variable is less than skew_thresh, it will be considered normal and will not be transformed.}
+
+\item{n_trans_val}{The number of gridpoints representing different strengths of transformation we want to test for getting the most normal curve. The higher this number is, the better the normalization. However, higher numbers can significantly increase computation time.}
 
 \item{scaled}{If set to TRUE, the resulting transformation will have zero mean and unit variance.}
 
@@ -27,9 +28,10 @@ optLogTransform(mydata, type = "log", skew_thresh = 1,
 \item{skew_folder}{The name of the folder where you would like to save a plot showing the optimal skew with respect to the transformation variable. If you do not wish to save these plots, set to NA.}
 }
 \description{
-This function finds the optimal transformation for normalization of each of the variables and outputs a matrix of the transformed data. If "scaled" is set to false, unless "retain_domain" is set to FALSE, the domain will be [0,1].
-The output is a list containing four objects:
+This function finds the optimal transformation for normalization of each of the variables and outputs a matrix of the transformed data.
+The output is a list containing five objects:
 \enumerate{
+\item a string vector listing the names of each variable,
 \item a string vector listing the function used to transform each variable,
 \item a numeric vector giving the skew of each transformed variable,
 \item a numeric vector giving the optimal transform value for each variable,

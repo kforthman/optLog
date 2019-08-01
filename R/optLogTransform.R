@@ -1,8 +1,9 @@
 #' Optimize log transformation
 #'
-#' This function finds the optimal transformation for normalization of each of the variables and outputs a matrix of the transformed data. If "scaled" is set to false, unless "retain_domain" is set to FALSE, the domain will be [0,1].
-#' The output is a list containing four objects:
+#' This function finds the optimal transformation for normalization of each of the variables and outputs a matrix of the transformed data.
+#' The output is a list containing five objects:
 #' \enumerate{
+#' \item a string vector listing the names of each variable,
 #' \item a string vector listing the function used to transform each variable,
 #' \item a numeric vector giving the skew of each transformed variable,
 #' \item a numeric vector giving the optimal transform value for each variable,
@@ -11,7 +12,7 @@
 #' @param mydata The dataset you would like to transform. Must be in vector or matrix form. If given a matrix, the function will transform each column seprately. Works best if columns are named, particularly if you are exporting plots.
 #' @param type The type of transformation can be either logarithmic or power; "log" and "power" respectively.
 #' @param skew_thresh The threshold skew value required for transformation. If the skew of the variable is less than skew_thresh, it will be considered normal and will not be transformed.
-#' #' @param n_trans_val The number of gridpoints representing different strengths of transformation we want to test for getting the most normal curve. The higher this number is, the better noimportFrom("grDevices", "dev.off", "png")
+#' @param n_trans_val The number of gridpoints representing different strengths of transformation we want to test for getting the most normal curve. The higher this number is, the better the normalization. However, higher numbers can significantly increase computation time.
 #' @param scaled If set to TRUE, the resulting transformation will have zero mean and unit variance.
 #' @param retain_domain Set to TRUE if you would like the transformed data to have the same domain as the original dataset (not recommended).
 #' @param hist_raw_folder The name of the folder where you would like to save a histogram showing the distribution of the raw data. If you do not wish to save these plots, set to NA.
