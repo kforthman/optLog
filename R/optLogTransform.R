@@ -162,6 +162,7 @@ optLogTransform <- function(mydata, type = 'log', skew_thresh = 1, n_trans_val =
       message("\tVariable is already normal; no need for transformation.")
       var_trans <- var_obs
       skew_val <- seq(0, 0, length.out = n_trans_val)
+      trans_opt <- NA
     }
 
     # If the observations are supposed to be of zero mean and unit variance, they are scaled.
